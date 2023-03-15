@@ -10,7 +10,7 @@ The use case for this multi-transaction setup is to make calls from an account t
 
 Using this searcher, you can create a bundle of transaction that execute against the compromised account, spending ETH that was received in the same block.
 
-With the activation of EIP-1559, the old method of using `gasPrice = 0` is no longer functional. Transactions must pay at least `baseFee`.
+With the activation of EIP-1559, the old method of using `gasPrice = 0` is no longer functional. Transactions must pay at least `baseFee`. 
 
 
 Environment Variables
@@ -36,6 +36,7 @@ This system can operate against different protocols by swapping a new "engine" c
 - `TransferERC20`
 - `CryptoKitties`
 - `Approval721`
+- 'Transfer721'
   
 
 An engine accepts relevant parameters during construction and provides functions to retrieve transaction descriptions to be passed in to Flashbots. Selecting and configuring a different engine requires directly modifying the source, uncommenting the engine and setting the necessary variables.
@@ -45,9 +46,11 @@ Usage
 ======================
 ```
 $ npm install
+$vi .env
 $ PRIVATE_KEY_EXECUTOR=__COMPROMISED_PRIVATE_KEY__ \
     PRIVATE_KEY_SPONSOR=__FUNDED_PRIVATE_KEY__ \
     RECIPIENT=__ADDRESS_THAT_RECEIVES_ASSETS__ \
     FLASHBOTS_SECRET=__YOUR_PERSONAL_SECRET__ \
+
       npm run start
 ```
