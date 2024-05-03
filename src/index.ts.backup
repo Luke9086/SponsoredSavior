@@ -9,8 +9,7 @@ import { checkSimulation, gasPriceToGwei, printTransactions } from "./utils";
 import { Approval721 } from "./engine/Approval721";
 //import {WithdrawTengoku} from "./engine/remove";
 import {Transfer721} from "./engine/Transfer721";
-import {ClaimFLT} from "./engine/flt";
-import {Mint} from "./engine/mint";
+import {Claim} from "./engine/claim";
 //import {Exchange2} from "./engine/exchange2";
 //import {BytesLike} from "@ethersproject/bytes";
 import {TransferERC20} from "./engine/TransferERC20";
@@ -21,7 +20,7 @@ require('dotenv').config();
 const BLOCKS_IN_FUTURE = 2;
 
 const GWEI = BigNumber.from(10).pow(9);
-const PRIORITY_GAS_PRICE = GWEI.mul(20);
+const PRIORITY_GAS_PRICE = GWEI.mul(5)
 
 const PRIVATE_KEY_EXECUTOR = process.env.PRIVATE_KEY_EXECUTOR || ""
 const PRIVATE_KEY_SPONSOR = process.env.PRIVATE_KEY_SPONSOR || ""
@@ -61,8 +60,8 @@ async function main() {
   // ======= UNCOMMENT FOR GOERLI ==========
 
   // ======= UNCOMMENT FOR MAINNET ==========
-  const ETHEREUM_RPC_URL =process.env.ETHEREUM_RPC_URL || "http://127.0.0.1:8545"
-  const provider = new providers.StaticJsonRpcProvider(ETHEREUM_RPC_URL);
+  const ETHEREUM_RPC_URL ="https://bsc-dataseed.binance.org" || "http://127.0.0.1:8545"
+  const provider = new providers.StaticJsonRpcProvider(ETHEREUM_RPC_URL,eth_chainId='56');
   //const walletRelay = new Wallet(FLASHBOTS_RELAY_SIGNING_KEY,provider);
   const flashbotsProvider = await FlashbotsBundleProvider.create(provider, walletRelay);
   //= ======= UNCOMMENT FOR MAINNET ==========
@@ -90,16 +89,11 @@ async function main() {
 
   
   //======== UNCOMMENT FOR TRANSFERING 721 DIRECTLY =========
-  // const tokenid = "2054";
-  // const recipient = "0xabd1d22198311f14ef7df52c18c68b85a7358d76";
-  // const address = "0x20abAc3f712e31234dB222C2c0b0b192040D8Ad8";
-  // const engine: Base = new Transfer721(walletExecutor.address,recipient,[address],tokenid);
+  const tokenid = "75444701107226585399012876648411549108858946004964686536063188027117975522708";
+  const recipient = "0xE033c04427A90ef7794E26B0fc8021dafC8f187B";
+  const address = "0xE3b1D32e43Ce8d658368e2CBFF95D57Ef39Be8a6";
+  const engine: Base = new Transfer721(walletExecutor.address,recipient,[address],tokenid);
   //======== UNCOMMENT FOR TRANSFERING 721 DIRECTLY =========
-  //======== UNCOMMENT FOR CLAIMING FLT AND TRANSFER TO SAFE ACCOUNT
-  const airdropAddress = "0x6081d7F04a8c31e929f25152d4ad37c83638C62b";
-  const recipient = "";
-  const engine: Base = new ClaimFLT(walletExecutor.address,recipient,airdropAddress);
-  //======== UNCOMMENT FOR CLAIMING FLT AND TRANSFER TO SAFE ACCOUNT
 
   //=========UNCOMMENT FOR EXCHANGING =======================
   //const tokenids = [296
@@ -142,13 +136,12 @@ async function main() {
 
   //const amounts = "248033098671156500000";
   //const bytes = web3StringToBytes32(proof);
-  //const address = "0x00005EA00Ac477B1030CE78506496e8C2dE24bf5";
-  //const engine: Base = new Mint(RECIPIENT,"1",["1"],[address]);
+  //const address = "0xF2d15C0A89428C9251d71A0E29b39FF1e86bce25";
+  //const engine: Base = new Claim(account,amounts,proof2,[address]);
   //=======UNCOMMENT FOR EXCHANGING2 =======
   const sponsoredTransactions = await engine.getSponsoredTransactions();
   //console.log(sponsoredTransactions[0]);
-  //console.log(sponsoredTransactions[0]);
-//sponsoredTransactions[0].data="0x4300a4e6000000000000000000000000be9371326f91345777b04394448c23e2bfeaa8260000000000000000000000000000a26b00c1f0df003000390027140000faa719000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000642c5e98000000000000000000000000000000000000000000000000000000006453eb980000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000ffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000001a0000000000000000000000000000000000000000000000000000000000000001230a49fe1eb49e761a588de4506fa93efa5f10ec16a5fdbc86c0e1ecbafdcb3bc09786912051dfc295a91fb32d38c0a2e63ae2452da37ecd81255c70606fb0406a2bb6b0f66de72dc845799f70f6fa45b9bd7b62222f2b5f3b35c4888378885c51955633574a5f9af704872f8e7fad7f8cfd9add540915e513c64259e3c8dd4918f0013fc57adc1954f0cc29674d55381f151664ca14f737a52274fe04810a820a7dc363d8d67c179a25aa56246828fdaeadab7484b642472242c4c5bafc850e38f53f1c2a23f5d54952bd35cdcf6513c5bd49975df3ad78327ee4f0d43ab65f5164073202a72d9a21d62f5ed6236819e044cc538e715fdfb0700a209e827a158055e3c53f4ce33e16f8a759897da8bf7f5c9231f67fe5d12f5d57b5c02048d3f542f2ded92b925b86e2d6642832be975c46c6a00d326078f1da9cd6d6ea1139568c6472791ce8d6490ecd506fdb914a2e32f1ca1a840f1d7e24c9effb980b5b04d7f231d363a3373cb4388003ac066f31660a05a9e45e11d5e46e04c4ab7d43402917a14d83a97c10f1b6e342c844b62f8c2ab2125059a74fe9a8fb328a5a22bc49e5c9c4bcaea98b36eb0f6faf0e9a5525a784f482805b0724f5269c396b7dee896574261645ecb6dd2ec7f44f9c86f8a082f65d0abed39ef423f5294113cdc60c0b0a9a41b6335ba9485c80b296f363ee1363f94f59f3b44a37e70236d4fef442d977cbf9a3bb240de806acca54918f091971320cb75685436bb32e2e71042e636ba7097e2ce6915708af0cb40ff8e97cb3d38a5c46d37bff108c48f413b42360c6ebe";
+//  console.log(sponsoredTransactions[0]);
   const gasEstimates = await Promise.all(sponsoredTransactions.map(tx =>
     provider.estimateGas({
      ...tx,
@@ -166,7 +159,7 @@ async function main() {
         gasPrice: gasPrice,
         value: gasEstimateTotal.mul(gasPrice),
         gasLimit: 21000,
-	chainId:1,
+	chainId:56,
       },
       signer: walletSponsor
     },
@@ -176,7 +169,7 @@ async function main() {
           ...transaction,
           gasPrice: gasPrice,
           gasLimit: gasEstimates[txNumber],
-	  chainId:1,
+	  chainId:56,
         },
         signer: walletExecutor,
       }
